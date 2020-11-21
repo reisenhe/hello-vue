@@ -8,13 +8,14 @@
 </template>
 
 <script>
+import event from '../event'
 export default {
     props: {
         item: Object
     },
     methods: {
         addToCart() {
-            this.$emit('add', this.item.id)
+            event.$emit('onAdd', this.item)
         }
     }
 }

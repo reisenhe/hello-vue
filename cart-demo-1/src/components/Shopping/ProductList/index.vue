@@ -1,7 +1,7 @@
 <template>
   <ul>
       <li v-for="item in list" :key="item.id">
-          <ProductItem :item="item" @add="onAdd"/>
+          <ProductItem :item="item"/>
       </li>
   </ul>
 </template>
@@ -14,11 +14,6 @@ export default {
     },
     props: {
         list: Array
-    },
-    methods: {
-        onAdd(id) {
-            this.$emit('add', id)
-        }
-    },
+    }
 }
 </script>

@@ -1,15 +1,16 @@
 <template>
   <div>
-    <ProductList :list="productList"
-      @add="onAdd" />
-    <CartList :list="cartList"/>
-    <div>总价: {{totalPrice}}</div>
+    <ProductList :list="productList" />
+    <div style="border-top: 1px solid #444"></div>
+    <CartList :productList="productList"
+      :cartList="cartList"/>
   </div>
 </template>
 
 <script>
-import ProductList from './components/ProductList'
-import CartList from './components/CartList'
+import event from './event'
+import ProductList from './ProductList/index'
+import CartList from './CartList/index'
 export default {
   components: {
     ProductList,
@@ -36,17 +37,47 @@ export default {
         status: 1
       },
     ]
+    this.cartList = [
+      {
+        id: 1,
+        number: 1
+      }
+    ],
+
+    event.$on('onAdd', this.onAdd)
+    event.$on('onReduce', this.onReduce)
+  },
+  destroyed() {
+    event.$off('onAdd')
+    event.$off('onReduce')
   },
   data() {
     return {
       productList: [],
-      cartList: [],
-      totalPrice: 0
+      cartList: []
     }
   },
   methods: {
-    onAdd(id) {
-      console.log('get', id)
+    onAdd(product) {
+      let item = this.cartList.find(item => item.id === product.id)
+      if (item) {
+        item.number ++
+      } else {
+        this.cartList.push({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          number: 1
+        })
+      }
+    },
+    onReduce(product) {
+      let item = this.cartList.find(item => item.id === product.id)
+
+      item.number --
+      if (item.number <= 0) {
+        this.cartList = this.cartList.filter(newItem => newItem.id !== item.id)
+      }
     }
   },
 }
